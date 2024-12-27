@@ -1,0 +1,37 @@
+2024-12-26 12:34:45 [[31merror[39m]: Failed to send verification email: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-4364a379d69sm251999865e9.0 - gsmtp
+2024-12-26 12:36:32 [[31merror[39m]: Failed to send verification email: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c828ba0sm18509198f8f.14 - gsmtp
+2024-12-26 13:13:27 [[31merror[39m]: SMTP connection failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-43656b119ccsm258882955e9.24 - gsmtp
+2024-12-26 13:13:27 [[31merror[39m]: Error during registration: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c829015sm18890465f8f.13 - gsmtp
+2024-12-26 13:15:43 [[31merror[39m]: SMTP connection failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c8288b8sm18752743f8f.11 - gsmtp
+2024-12-26 13:15:43 [[31merror[39m]: Error during registration: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c832e1bsm18783393f8f.31 - gsmtp
+2024-12-26 13:49:58 [[31merror[39m]: Error sending email to faizaashfaq430@gmail.com: Mail command failed: 550 5.7.1 Sending from domain gmail.com is not allowed
+2024-12-26 13:49:58 [[31merror[39m]: Error during registration: Failed to send email
+2024-12-26 13:55:07 [[31merror[39m]: Error sending email to faizaashfaq430@gmail.com: Mail command failed: 550 5.7.1 Sending from domain gmail.com is not allowed
+2024-12-26 13:55:07 [[31merror[39m]: Error during registration: Failed to send email
+2024-12-26 14:12:42 [[31merror[39m]: Error sending email to faizaashfaq430@gmail.com: Invalid login: 535 5.7.8 Authentication failed
+2024-12-26 14:12:42 [[31merror[39m]: Error during registration: Failed to send email
+2024-12-26 14:15:13 [[31merror[39m]: Error sending email to faizaashfaq430@gmail.com: Invalid login: 535 5.7.8 Authentication failed
+2024-12-26 14:15:13 [[31merror[39m]: Error during registration: Failed to send email
+2024-12-26 17:44:40 [[31merror[39m]: Error sending email to faizaashfaq430@gmail.com: Invalid login: 535 5.7.8 Authentication failed
+2024-12-26 17:44:40 [[31merror[39m]: Error during registration: Failed to send email
+2024-12-26 18:03:56 [[31merror[39m]: Error during registration: Failed to send email. Please try again later.
+2024-12-26 19:25:25 [[31merror[39m]: Error during registration: Failed to send email. Please try again later.
+2024-12-26 19:31:21 [[31merror[39m]: Error during registration: Failed to send email. Please try again later.
+2024-12-27 12:49:09 [[31merror[39m]: Error during registration: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-43656b4471bsm290851055e9.44 - gsmtp
+2024-12-27 12:49:10 [[31merror[39m]: SMTP connection failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials 5b1f17b1804b1-43664b15365sm241434305e9.7 - gsmtp
+2024-12-27 12:50:58 [[31merror[39m]: Error during email verification: jwt malformed
+2024-12-27 12:51:13 [[31merror[39m]: Error during email verification: jwt malformed
+2024-12-27 12:51:43 [[31merror[39m]: Error during email verification: jwt malformed
+2024-12-27 12:52:11 [[31merror[39m]: Error during email verification: jwt malformed
+2024-12-27 13:02:42 [[31merror[39m]: Error during registration: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c8a8d7esm21539320f8f.101 - gsmtp
+2024-12-27 13:02:42 [[31merror[39m]: SMTP connection failed: Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials ffacd0b85a97d-38a1c8292adsm21362875f8f.19 - gsmtp
