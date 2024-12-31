@@ -19,7 +19,7 @@ function generateToken(payload, secret, expiresIn) {
 async function sendEmail(to, subject, html) {
   try {
     const response = await resend.emails.send({
-      from: process.env.EMAIL_USER, // Verified email from Resend
+      from: process.env.EMAIL_USER, // Use verified email like onboarding@resend.dev
       to,
       subject,
       html,
@@ -31,6 +31,7 @@ async function sendEmail(to, subject, html) {
     throw new Error("Failed to send email");
   }
 }
+
 
 //  Create Account
 router.post("/create-account", async (req, res) => {
