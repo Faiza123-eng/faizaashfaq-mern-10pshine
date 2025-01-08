@@ -32,6 +32,7 @@ async function sendEmail(to, subject, html) {
   }
 }
 
+
 //  Create Account
 router.post("/create-account", async (req, res) => {
   const { fullName, email, password } = req.body;
