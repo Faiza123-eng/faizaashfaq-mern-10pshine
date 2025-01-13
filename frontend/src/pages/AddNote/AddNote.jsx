@@ -1,19 +1,43 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./AddNote.css";
-
 
 const AddNote = () => {
   const [note, setNote] = useState({ title: "", content: "", tags: "" });
   const navigate = useNavigate();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!note.title || !note.content) {
       alert("Please fill all required fields.");
       return;
     }
-    alert("Note added successfully!");
-    navigate("/dashboard");
+
+    try {
+      const token = localStorage.getItem("token"); // Get token from local storage
+      const response = await axios.post(
+        "/api/notes/create",
+        {
+          title: note.title,
+          content: note.content,
+          tags: note.tags.split(",").map((tag) => tag.trim()),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Pass the token
+          },
+        }
+      );
+
+      if (response.data.error) {
+        alert(response.data.message);
+      } else {
+        alert("Note added successfully!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      alert(`Error: ${error.response?.data?.message || "Server error"}`);
+    }
   };
 
   return (

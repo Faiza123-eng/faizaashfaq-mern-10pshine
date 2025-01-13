@@ -1,31 +1,74 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import "./EditNote.css"; 
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import "./EditNote.css";
 
 const EditNote = () => {
-  const [note, setNote] = useState({
-    title: "Sample Title",
-    content: "Sample Content",
-    tags: "tag1, tag2",
-  });
+  const [note, setNote] = useState({ title: "", content: "", tags: "" });
   const navigate = useNavigate();
-  const handleSave = () => {
+  const { id } = useParams(); // Note ID from the route
+
+  useEffect(() => {
+    const fetchNote = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Get token from local storage
+        const response = await axios.get(`/api/notes/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.data.error) {
+          alert(response.data.message);
+        } else {
+          const { title, content, tags } = response.data.note;
+          setNote({ title, content, tags: tags.join(", ") });
+        }
+      } catch (error) {
+        alert(`Error fetching note: ${error.response?.data?.message || "Server error"}`);
+        navigate("/dashboard");
+      }
+    };
+
+    fetchNote();
+  }, [id, navigate]);
+
+  const handleSave = async () => {
     if (!note.title.trim() || !note.content.trim()) {
       alert("Title and content cannot be empty!");
       return;
     }
 
-    const tagsArray = note.tags.split(",").map((tag) => tag.trim());
-    console.log("Updated Note:", { ...note, tags: tagsArray });
+    try {
+      const token = localStorage.getItem("token"); // Get token from local storage
+      const response = await axios.put(
+        `/api/notes/edit/${id}`,
+        {
+          title: note.title,
+          content: note.content,
+          tags: note.tags.split(",").map((tag) => tag.trim()),
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    alert("Note updated successfully!");
-    navigate("/dashboard");
+      if (response.data.error) {
+        alert(response.data.message);
+      } else {
+        alert("Note updated successfully!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      alert(`Error: ${error.response?.data?.message || "Server error"}`);
+    }
   };
 
   return (
     <div className="edit-note-container">
       <h2 className="edit-note-title">Edit Note</h2>
-
       <div className="form-group">
         <label htmlFor="title" className="form-label">
           Title
@@ -33,26 +76,22 @@ const EditNote = () => {
         <input
           id="title"
           type="text"
-          className="form-input animated"
-          placeholder="Enter the title"
+          className="form-input"
           value={note.title}
           onChange={(e) => setNote({ ...note, title: e.target.value })}
         />
       </div>
-
       <div className="form-group">
         <label htmlFor="content" className="form-label">
           Content
         </label>
         <textarea
           id="content"
-          className="form-textarea animated"
-          placeholder="Enter the content"
+          className="form-textarea"
           value={note.content}
           onChange={(e) => setNote({ ...note, content: e.target.value })}
         ></textarea>
       </div>
-
       <div className="form-group">
         <label htmlFor="tags" className="form-label">
           Tags
@@ -60,14 +99,12 @@ const EditNote = () => {
         <input
           id="tags"
           type="text"
-          className="form-input animated"
-          placeholder="Tags (comma-separated)"
+          className="form-input"
           value={note.tags}
           onChange={(e) => setNote({ ...note, tags: e.target.value })}
         />
       </div>
-
-      <button className="save-btn animated" onClick={handleSave}>
+      <button className="save-btn" onClick={handleSave}>
         Save Changes
       </button>
     </div>
