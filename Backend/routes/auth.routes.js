@@ -19,7 +19,7 @@ function generateToken(payload, secret, expiresIn) {
 async function sendEmail(to, subject, html) {
   try {
     const response = await resend.emails.send({
-      from: process.env.EMAIL_USER, // Use verified email like onboarding@resend.dev
+      from: process.env.EMAIL_USER, 
       to,
       subject,
       html,
@@ -63,7 +63,8 @@ router.post("/create-account", async (req, res) => {
       "1h"
     );
 
-    const verificationLink = `${process.env.CLIENT_URL}/verify-email/${verificationToken}`;
+    const verificationLink = `${process.env.SERVER_URL}/api/auth/verify-email/${verificationToken}?redirect=dashboard`;
+
     await sendEmail(
       email,
       "Email Verification",
@@ -133,31 +134,26 @@ router.post("/login", async (req, res) => {
 
 //  Email Verify
 router.get("/verify-email/:token", async (req, res) => {
-  const { token } = req.params;
-
   try {
+    console.log("Received token:", req.params.token); // Debug log
+    const { token } = req.params;
     const decoded = jwt.verify(token, process.env.VERIFY_EMAIL_SECRET);
+    console.log("Decoded token:", decoded);
 
     const user = await User.findById(decoded.id);
     if (!user) {
-      return res.status(404).json({
-        error: true,
-        message: "User not found",
-      });
+      return res.status(404).json({ error: true, message: "User not found" });
     }
 
     user.isVerified = true;
     await user.save();
 
-    return res.json({
-      error: false,
-      message: "Email verified successfully",
-    });
+    const redirectUrl = `${process.env.CLIENT_URL}/dashboard`;
+    console.log("Redirecting to:", redirectUrl); // Debug log
+    return res.redirect(redirectUrl);
   } catch (error) {
-    return res.status(400).json({
-      error: true,
-      message: "Invalid or expired token",
-    });
+    console.error("Error during verification:", error.message);
+    return res.redirect(`${process.env.CLIENT_URL}/email-verification?verified=false`);
   }
 });
 
