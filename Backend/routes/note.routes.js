@@ -2,7 +2,6 @@ const express = require("express");
 const Note = require("../models/note.model");
 const { authenticateToken } = require("../utilities");
 const logger = require("../utilities/logger");
-
 const router = express.Router();
 
 // Add a new note
@@ -42,6 +41,68 @@ router.post("/create", authenticateToken, async (req, res) => {
     });
   }
 });
+
+
+// Get all notes for the authenticated user
+router.get("/all", authenticateToken, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const notes = await Note.find({ userId });
+    logger.info(`Notes retrieved successfully for User ID: ${userId}`);
+    return res.json({
+      error: false,
+      message: "Notes retrieved successfully",
+      notes,
+    });
+  } catch (error) {
+    logger.error(`Error retrieving notes for User ID: ${req.user.id}: ${error.message}`);
+    return res.status(500).json({
+      error: true,
+      message: "Server error: " + error.message,
+    });
+  }
+});
+
+// Get a specific note by ID
+router.get("/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const note = await Note.findById(id);
+
+    if (!note) {
+      logger.warn(`Note not found for ID: ${id}`);
+      return res.status(404).json({
+        error: true,
+        message: "Note not found",
+      });
+    }
+
+    // Ensure the note belongs to the authenticated user
+    if (note.userId.toString() !== req.user.id) {
+      logger.warn(`Unauthorized access to Note ID: ${id} by User ID: ${req.user.id}`);
+      return res.status(403).json({
+        error: true,
+        message: "Unauthorized to access this note",
+      });
+    }
+
+    logger.info(`Note retrieved successfully. Note ID: ${id}`);
+    return res.json({
+      error: false,
+      message: "Note retrieved successfully",
+      note,
+    });
+  } catch (error) {
+    logger.error(`Error retrieving note ID: ${id}: ${error.message}`);
+    return res.status(500).json({
+      error: true,
+      message: "Server error: " + error.message,
+    });
+  }
+});
+
 
 // Edit a note by ID
 router.put("/edit/:id", authenticateToken, async (req, res) => {
@@ -122,26 +183,6 @@ router.delete("/delete/:id", authenticateToken, async (req, res) => {
   }
 });
 
-// Get all notes for the authenticated user
-router.get("/all", authenticateToken, async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    const notes = await Note.find({ userId });
-    logger.info(`Notes retrieved successfully for User ID: ${userId}`);
-    return res.json({
-      error: false,
-      message: "Notes retrieved successfully",
-      notes,
-    });
-  } catch (error) {
-    logger.error(`Error retrieving notes for User ID: ${req.user.id}: ${error.message}`);
-    return res.status(500).json({
-      error: true,
-      message: "Server error: " + error.message,
-    });
-  }
-});
 
 // Test route
 logger.info("Note routes loaded");
@@ -149,6 +190,5 @@ router.get("/test", (req, res) => {
   logger.info("Test endpoint for note routes hit");
   res.send("Note routes working");
 });
-
 
 module.exports = router;
