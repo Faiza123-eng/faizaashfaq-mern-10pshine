@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import "./Signup.css";
 
 const SignUp = () => {
@@ -11,6 +11,7 @@ const SignUp = () => {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +34,7 @@ const SignUp = () => {
       if (response.ok) {
         setMessage("Sign-up successful! Please verify your email.");
         setError(false);
+        navigate("/email-verification");
       } else {
         setMessage(data.message || "Something went wrong.");
         setError(true);
@@ -42,7 +44,7 @@ const SignUp = () => {
       setError(true);
     }
   };
-
+  
   return (
     <div className="signup-container">
       <div className="signup-form">
