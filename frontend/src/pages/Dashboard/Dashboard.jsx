@@ -1,75 +1,80 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import jsPDF from "jspdf";
+import Sidebar from "./Sidebar"; 
 import "./Dashboard.css";
 
 const Dashboard = () => {
   const [notes, setNotes] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
+  const [filter, setFilter] = useState("all"); 
   const navigate = useNavigate();
 
-  // Fetch notes from backend
   useEffect(() => {
     const fetchNotes = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get token from local storage
-        const response = await axios.get("/api/notes/all", {
-          headers: { Authorization: `Bearer ${token}` },
+        const response = await fetch("http://localhost:5000/api/notes/all", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, 
+          },
         });
 
-        if (response.data.error) {
-          alert(response.data.message);
+        if (response.ok) {
+          const data = await response.json();
+          setNotes(data.notes);
         } else {
-          setNotes(response.data.notes);
+          console.error("Failed to fetch notes");
         }
       } catch (error) {
-        alert(`Error fetching notes: ${error.response?.data?.message || "Server error"}`);
+        console.error("Error fetching notes:", error);
       }
     };
 
     fetchNotes();
   }, []);
 
-  // Pin or unpin a note
-  const togglePinNote = async (noteId, isPinned) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        `/api/pinned/update-note-pinned/${noteId}`,
-        { isPinned: !isPinned },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data.error) {
-        alert(response.data.message);
-      } else {
-        setNotes((prevNotes) =>
-          prevNotes.map((note) =>
-            note._id === noteId ? { ...note, isPinned: !isPinned } : note
-          )
-        );
-      }
-    } catch (error) {
-      alert(`Error pinning/unpinning note: ${error.response?.data?.message || "Server error"}`);
+  const filteredNotes = notes.filter((note) => {
+    if (filter === "favorites") {
+      return note.isFavorite;
+    } else if (filter === "pinned") {
+      return note.isPinned;
     }
+    return (
+      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.tags.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  });
+
+  const handleAddNote = () => navigate("/add-note");
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen); 
   };
 
-  // Favorite or unfavorite a note
-  const toggleFavoriteNote = async (noteId, isFavorite) => {
-    try {
-      const token = localStorage.getItem("token");
-      const endpoint = isFavorite
-        ? `/api/favorites/remove-from-favorites/${noteId}`
-        : `/api/favorites/add-to-favorites/${noteId}`;
-      const response = await axios.put(endpoint, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken"); 
+    navigate("/login"); 
+  };
 
-      if (response.data.error) {
-        alert(response.data.message);
-      } else {
+  const toggleFavorite = async (noteId, isFavorite) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/favorites/${
+          isFavorite ? "remove-from-favorites" : "add-to-favorites"
+        }/${noteId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      if (response.ok) {
         setNotes((prevNotes) =>
           prevNotes.map((note) =>
             note._id === noteId ? { ...note, isFavorite: !isFavorite } : note
@@ -77,47 +82,69 @@ const Dashboard = () => {
         );
       }
     } catch (error) {
-      alert(`Error favoriting/unfavoriting note: ${error.response?.data?.message || "Server error"}`);
+      console.error("Error updating favorite status:", error);
     }
   };
 
-  // Delete a note
-  const deleteNote = async (noteId) => {
-    if (!window.confirm("Are you sure you want to delete this note?")) return;
-
+  const togglePin = async (noteId, isPinned) => {
     try {
-      const token = localStorage.getItem("token");
-      const response = await axios.delete(`/api/notes/delete/${noteId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (response.data.error) {
-        alert(response.data.message);
-      } else {
-        setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
-        alert("Note deleted successfully!");
+      const response = await fetch(
+        `http://localhost:5000/api/pinned/update-note-pinned/${noteId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+          body: JSON.stringify({ isPinned: !isPinned }),
+        }
+      );
+      if (response.ok) {
+        setNotes((prevNotes) =>
+          prevNotes.map((note) =>
+            note._id === noteId ? { ...note, isPinned: !isPinned } : note
+          )
+        );
       }
     } catch (error) {
-      alert(`Error deleting note: ${error.response?.data?.message || "Server error"}`);
+      console.error("Error updating pinned status:", error);
     }
   };
 
-  // Filter notes by search query
-  const filteredNotes = notes.filter(
-    (note) =>
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-  );
+  const downloadNoteAsPDF = (note) => {
+    const doc = new jsPDF();
 
-  const handleAddNote = () => navigate("/add-note");
+    
+    doc.setFontSize(16);
+    doc.text(note.title, 10, 10); 
+    doc.setFontSize(12);
+    doc.text(note.content, 10, 30); 
+
+
+    if (note.tags.length > 0) {
+      doc.text("Tags:", 10, 60);
+      doc.text(note.tags.join(", "), 10, 70); 
+    }
+
+    
+    doc.save(`${note.title}.pdf`);
+  };
 
   return (
     <div className="dashboard-container">
+      <button className="hamburger-menu" onClick={toggleSidebar}>
+        &#9776; 
+      </button>
+      <Sidebar
+        isOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        setFilter={setFilter}
+        handleLogout={handleLogout}
+      />
+
       <h1 className="main-heading">My Notes</h1>
 
-      {/* Search Bar */}
+      
       <div className="search-bar-container">
         <input
           type="text"
@@ -128,7 +155,7 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Notes List */}
+     
       <div className="notes-list">
         {filteredNotes.length > 0 ? (
           filteredNotes.map((note) => (
@@ -147,26 +174,83 @@ const Dashboard = () => {
               </div>
               <div className="note-actions">
                 <button
-                  className="btn-small"
-                  onClick={() => togglePinNote(note._id, note.isPinned)}
-                >
-                  {note.isPinned ? "Unpin" : "Pin"}
-                </button>
-                <button
-                  className="btn-small"
-                  onClick={() => toggleFavoriteNote(note._id, note.isFavorite)}
+                  className={`btn-small ${
+                    note.isFavorite ? "favorite" : ""
+                  }`}
+                  style={{
+                    background: "#007bff",
+                    color: "white",
+                    border: "2px solid #007bff",
+                  }}
+                  onClick={() => toggleFavorite(note._id, note.isFavorite)}
                 >
                   {note.isFavorite ? "Unfavorite" : "Favorite"}
                 </button>
                 <button
+                  className={`btn-small ${note.isPinned ? "pinned" : ""}`}
+                  style={{
+                    background: "#007bff",
+                    color: "white",
+                    border: "2px solid #007bff",
+                  }}
+                
+                  onClick={() => togglePin(note._id, note.isPinned)}
+                >
+                  {note.isPinned ? "Unpin" : "Pin"}
+                </button>
+                <Link to={`/edit-note/${note._id}`}>
+                  <button className="btn-small"
+                  style={{
+                    background: "#007bff",
+                    color: "white",
+                    height: "40px", // Set the same height
+                    width: "120px", // Set the same width
+                    border: "2px solid #007bff",
+                  }}
+                  >Edit Note</button>
+                </Link>
+                <button
                   className="btn-small btn-delete"
-                  onClick={() => deleteNote(note._id)}
+                  style={{
+                    background: "#007bff",
+                    color: "white",
+                    height: "40px", // Set the same height
+                    width: "120px", // Set the same width
+                    border: "2px solid #007bff",
+                  }}
+                  onClick={async () => {
+                    const response = await fetch(
+                      `http://localhost:5000/api/notes/delete/${note._id}`,
+                      {
+                        method: "DELETE",
+                        headers: {
+                          Authorization: `Bearer ${localStorage.getItem(
+                            "accessToken"
+                          )}`,
+                        },
+                      }
+                    );
+                    if (response.ok) {
+                      setNotes((prevNotes) =>
+                        prevNotes.filter((n) => n._id !== note._id)
+                      );
+                    }
+                  }}
                 >
                   Delete
                 </button>
-                <Link to={`/edit-note/${note._id}`}>
-                  <button className="btn-small">Edit</button>
-                </Link>
+                <button
+                  className="btn-small btn-download"
+                  style={{
+                    background: "#4caf50",
+                    color: "white",
+                    border: "2px solid #4caf50",
+                    boxShadow: "0 0 5px #4caf50, 0 0 10px rgba(76, 175, 80, 0.7)",
+                  }}
+                  onClick={() => downloadNoteAsPDF(note)}
+                >
+                  Download as PDF
+                </button>
               </div>
             </div>
           ))
@@ -175,7 +259,7 @@ const Dashboard = () => {
         )}
       </div>
 
-      {/* Add Note Button */}
+
       <div className="add-note-container">
         <button className="btn-primary" onClick={handleAddNote}>
           + Add Note
