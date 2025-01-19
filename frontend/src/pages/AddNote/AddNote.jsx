@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import "./AddNote.css";
 
 const AddNote = () => {
@@ -13,30 +12,28 @@ const AddNote = () => {
       return;
     }
 
-    try {
-      const token = localStorage.getItem("token"); // Get token from local storage
-      const response = await axios.post(
-        "/api/notes/create",
-        {
-          title: note.title,
-          content: note.content,
-          tags: note.tags.split(",").map((tag) => tag.trim()),
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`, // Pass the token
-          },
-        }
-      );
+    const tagsArray = note.tags.split(",").map((tag) => tag.trim());
+    const newNote = { ...note, tags: tagsArray };
 
-      if (response.data.error) {
-        alert(response.data.message);
-      } else {
+    try {
+      const response = await fetch("http://localhost:5000/api/notes/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+        body: JSON.stringify(newNote),
+      });
+
+      if (response.ok) {
         alert("Note added successfully!");
         navigate("/dashboard");
+      } else {
+        alert("Failed to add note.");
       }
     } catch (error) {
-      alert(`Error: ${error.response?.data?.message || "Server error"}`);
+      console.error("Error adding note:", error);
+      alert("Server error. Please try again later.");
     }
   };
 
