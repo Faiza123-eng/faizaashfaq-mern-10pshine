@@ -4,49 +4,85 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
   margin: 0;
   padding: 20px;
+  box-sizing: border-box;
 }
 
-
+/* Card Styles */
 .email-verification-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+  padding: 40px 30px;
   text-align: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.email-verification-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.2);
 }
 
 
 .email-verification-title {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: bold;
-  color: #333333;
+  color: #1e88e5;
   margin-bottom: 20px;
+  text-transform: capitalize;
 }
 
-
+/* Text Styles */
 .email-verification-text {
-  font-size: 16px;
-  color: #555555;
+  font-size: 18px;
+  color: #4a4a4a;
+  line-height: 1.6;
   margin-bottom: 30px;
 }
 
-
+/* Button Styles */
 .email-verification-button {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
-  padding: 10px 20px;
+  border-radius: 25px;
+  padding: 12px 25px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .email-verification-button:hover {
   background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+.email-verification-button:focus {
+  outline: none;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.6);
+}
+
+
+@media (max-width: 600px) {
+  .email-verification-card {
+    padding: 30px 20px;
+  }
+
+  .email-verification-title {
+    font-size: 22px;
+  }
+
+  .email-verification-text {
+    font-size: 16px;
+  }
+
+  .email-verification-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
 }
