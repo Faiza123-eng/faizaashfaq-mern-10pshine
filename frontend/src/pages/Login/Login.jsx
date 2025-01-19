@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "./Login.css";
 
 const Login = () => {
@@ -10,6 +10,7 @@ const Login = () => {
 
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
+  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,7 +34,8 @@ const Login = () => {
         localStorage.setItem("accessToken", data.accessToken);
         setMessage("Login successful!");
         setError(false);
-        // Redirect to dashboard or notes page
+        // Redirect to dashboard 
+        navigate("/dashboard");
       } else {
         setMessage(data.message || "Invalid email or password.");
         setError(true);
