@@ -3,8 +3,8 @@
   max-width: 1200px;
   margin: 0 auto;
   color: #f0f0f0;
+  font-family: "Arial", sans-serif;
 }
-
 
 .main-heading {
   font-size: 2.5rem;
@@ -15,9 +15,8 @@
   animation: glow 1.5s infinite alternate;
 }
 
-
 .search-bar-container {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   display: flex;
   justify-content: center;
 }
@@ -25,81 +24,163 @@
 .search-bar {
   width: 100%;
   max-width: 400px;
-  padding: 10px;
+  padding: 12px;
   font-size: 1rem;
-  border: 1px solid #ccc;
+  border: 1px solid #0072ff;
   border-radius: 5px;
   outline: none;
-  transition: box-shadow 0.3s;
+  color: black; /* Text color updated to black */
+  background-color: white; /* Background color updated to white */
+  transition: box-shadow 0.3s, border-color 0.3s;
 }
 
 .search-bar:focus {
-  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+  border-color: #38bdf8;
 }
-
 
 .notes-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 25px;
   justify-content: center;
 }
 
 .note-card {
-  background: #2a2a2a;
+  background: linear-gradient(135deg, #282c34, #3a3f47);
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 15px;
   width: 300px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+  color: #e0e0e0;
+}
+
+.note-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.7);
 }
 
 .note-card.pinned {
   border: 2px solid #00c6ff;
+  box-shadow: 0 0 10px #00c6ff, 0 0 20px rgba(0, 198, 255, 0.5);
 }
 
 .note-tags {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .note-tag {
   display: inline-block;
   background: #0072ff;
   color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 15px;
   font-size: 0.85rem;
   margin-right: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
-
 .note-actions {
-  margin-top: 10px;
+  margin-top: 20px;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  justify-content: space-between;
 }
 
 .btn-small {
-  background: #444;
-  color: #fff;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  border: 2px solid transparent; /* Default border */
+  border-radius: 8px;
   cursor: pointer;
-  font-size: 0.85rem;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48%;
+}
+
+/* Border styles for specific buttons */
+.btn-small.favorite {
+  background: #ffd700; /* Gold */
+  color: #222;
+  border: 2px solid #ffd700; /* Gold border */
+  box-shadow: 0 0 5px #ffd700, 0 0 10px rgba(255, 215, 0, 0.7);
+}
+
+.btn-small.favorite:hover {
+  background: #ffcc00; /* Brighter Gold */
+}
+
+.btn-small.pinned {
+  background: #87ceeb; /* Light blue */
+  color: #222;
+  border: 2px solid #87ceeb; /* Blue border */
+  box-shadow: 0 0 5px #87ceeb, 0 0 10px rgba(135, 206, 235, 0.7);
+}
+
+.btn-small.pinned:hover {
+  background: #5ebeea; /* Darker blue */
+}
+
+.btn-small.edit {
+  background: #007bff; /* Blue */
+  color: white;
+  border: 2px solid #007bff; /* Blue border */
+  box-shadow: 0 0 5px #007bff, 0 0 10px rgba(0, 123, 255, 0.7);
+}
+
+.btn-small.edit:hover {
+  background: #0056b3; /* Darker Blue */
+}
+
+.btn-small.delete {
+  background: #ff5c5c; /* Red */
+  color: white;
+  border: 2px solid #ff5c5c; /* Draw border */
+}
+
+.btn-small.delete:hover {
+  background: #ff3030; /* Brighter Red */
+}
+
+.btn-small.download {
+  background: #4caf50; /* Green */
+  color: white;
+  border: 2px solid #4caf50; /* Draw border */
+}
+
+.btn-small.download:hover {
+  background: #45a049; /* Darker Green */
 }
 
 .btn-small:hover {
-  background: #666;
+  transform: translateY(-2px);
+  filter: brightness(1.2);
 }
 
-.btn-delete {
-  background: #ff5c5c;
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #0072ff;
+  color: white;
+  font-size: 1.5rem;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 1100;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
-.btn-delete:hover {
-  background: #ff1e1e;
+.hamburger-menu:hover {
+  background: #005bb5;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
-
 
 .add-note-container {
   position: fixed;
@@ -112,18 +193,19 @@
   background: linear-gradient(45deg, #00c6ff, #0072ff);
   border: none;
   color: #fff;
-  padding: 10px 20px;
+  padding: 15px 25px;
   font-size: 1rem;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s, transform 0.3s;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .btn-primary:hover {
   background: linear-gradient(45deg, #0072ff, #00c6ff);
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
-
 
 @keyframes glow {
   from {
