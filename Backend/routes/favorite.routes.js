@@ -1,7 +1,8 @@
-const express = require("express");
-const Note = require("../models/note.model");
-const { authenticateToken } = require("../utilities");
-const logger = require("../utilities/logger");
+import express from 'express'; // Replace require with import
+import Note from '../models/note.model.js'; // Ensure you use .js extension
+import { authenticateToken } from '../utilities.js'; // Ensure you use .js extension
+import logger from '../utilities/logger.js'; // Ensure you use .js extension
+
 const router = express.Router();
 
 // Add to Favorites
@@ -111,9 +112,10 @@ router.get("/all-favorites", authenticateToken, async (req, res) => {
 });
 
 logger.info("Favorite routes loaded");
+
 router.get("/test", (req, res) => {
   logger.info("Test endpoint for favorite routes hit");
   res.send("Favorite routes working");
 });
 
-module.exports = router;
+export default router;

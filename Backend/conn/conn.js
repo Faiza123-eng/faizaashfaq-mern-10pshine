@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const config = require("../config.json");
+import mongoose from 'mongoose';
+import config from '../config.json' assert { type: 'json' };  // You need this for importing JSON in ES modules
 
 const connectToDatabase = async () => {
   try {
@@ -12,5 +12,4 @@ const connectToDatabase = async () => {
   }
 };
 
-module.exports = connectToDatabase;
-
+export default connectToDatabase;

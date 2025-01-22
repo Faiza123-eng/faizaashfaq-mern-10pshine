@@ -1,8 +1,7 @@
-const express = require("express");
-const Note = require("../models/note.model");
-const { authenticateToken } = require("../utilities");
-const logger = require("../utilities/logger");
-
+import express from 'express';  // Using import instead of require
+import Note from '../models/note.model.js';  // Use .js extension
+import { authenticateToken } from '../utilities.js';  // Use .js extension
+import logger from '../utilities/logger.js';  // Use .js extension
 const router = express.Router();
 
 // Add a new note
@@ -150,5 +149,4 @@ router.get("/test", (req, res) => {
   res.send("Note routes working");
 });
 
-
-module.exports = router;
+export default router;
