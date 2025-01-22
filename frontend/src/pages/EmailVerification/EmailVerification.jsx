@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./EmailVerification.css";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const EmailVerification = () => {
   const [message, setMessage] = useState("");
